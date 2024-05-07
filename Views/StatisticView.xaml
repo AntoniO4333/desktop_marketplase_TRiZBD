@@ -1,0 +1,24 @@
+﻿<Window x:Class="web_marketplase_TRiZBD.Views.StatisticView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:web_marketplase_TRiZBD.ViewModels"
+        Title="Statistics" Height="450" Width="800">
+   
+    <Grid>
+        <TabControl Margin="10">
+            <TabItem Header="Warehouse Statistics">
+                <ListView ItemsSource="{Binding WarehouseStatistics}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" DisplayMemberBinding="{Binding WarehouseID}"/>
+                            <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Location}"/>
+                            <GridViewColumn Header="Total Orders" DisplayMemberBinding="{Binding TotalOrders}"/>
+                            <GridViewColumn Header="Employee Count" DisplayMemberBinding="{Binding EmployeeCount}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <!-- Другие вкладки для дополнительной статистики -->
+        </TabControl>
+    </Grid>
+</Window>

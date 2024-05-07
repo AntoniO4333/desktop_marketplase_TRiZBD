@@ -1,0 +1,13 @@
+﻿<!-- LoginView.xaml -->
+<Window x:Class="web_marketplase_TRiZBD.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:web_marketplase_TRiZBD.ViewModels"
+        Title="Login" Height="200" Width="300">
+    
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="202">
+        <TextBox x:Name="usernameTextBox" Width="188" Margin="5" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox x:Name="passwordBox" Text="{Binding Password, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Width="188"/>
+        <Button Content="Login" Width="186" Margin="5" Command="{Binding LoginCommand}"/>
+    </StackPanel>
+</Window>
