@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:web_marketplase_TRiZBD"
-             StartupUri="Views/LoginView.xaml">
+             StartupUri="Views/LoginView.xaml"
+             xmlns:vm="clr-namespace:web_marketplase_TRiZBD.ViewModels">
+
     <Application.Resources>
-         
+        <vm:ProductsViewModel x:Key="ProductsViewModel"/>
     </Application.Resources>
 </Application>

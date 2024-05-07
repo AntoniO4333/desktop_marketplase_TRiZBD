@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using web_marketplase_TRiZBD.ViewModels;
 
 namespace web_marketplase_TRiZBD.Views
 {
@@ -22,6 +23,7 @@ namespace web_marketplase_TRiZBD.Views
         public ProductsView()
         {
             InitializeComponent();
+            DataContext = new ProductsViewModel();
         }
     }
 }

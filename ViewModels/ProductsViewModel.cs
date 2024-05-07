@@ -1,6 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
+using web_marketplase_TRiZBD.Models;
+using Microsoft.EntityFrameworkCore;
 using static web_marketplase_TRiZBD.Models.Classes;
+using System.Windows;
 
 namespace web_marketplase_TRiZBD.ViewModels
 {
@@ -8,6 +12,7 @@ namespace web_marketplase_TRiZBD.ViewModels
     {
         private ObservableCollection<Product> _products;
         private Product _selectedProduct;
+        private readonly MarketplaceContext _context;
 
         public ObservableCollection<Product> Products
         {
@@ -27,25 +32,32 @@ namespace web_marketplase_TRiZBD.ViewModels
 
         public ProductsViewModel()
         {
-            Products = new ObservableCollection<Product>();
+            _context = new MarketplaceContext();
             AddProductCommand = new RelayCommand(ExecuteAddProduct);
             DeleteProductCommand = new RelayCommand(ExecuteDeleteProduct, CanExecuteModifyProduct);
             EditProductCommand = new RelayCommand(ExecuteEditProduct, CanExecuteModifyProduct);
 
-            // Загрузите ваш список продуктов здесь, если есть начальные данные
             LoadInitialData();
         }
 
         private void LoadInitialData()
         {
-            // Это пример, реальные данные следует загружать из базы данных или другого источника
-            Products.Add(new Product { ProductID = 1, Name = "Example Product 1", Price = 100.00m, Quantity = 10 });
-            Products.Add(new Product { ProductID = 2, Name = "Example Product 2", Price = 150.00m, Quantity = 20 });
+            var products = _context.Products.ToList();
+            Application.Current.Dispatcher.Invoke(() => {
+                Products = new ObservableCollection<Product>(products);
+                OnPropertyChanged(nameof(Products)); // Убедитесь, что UI обновляется
+            });
         }
+
+
+
+
 
         private void ExecuteAddProduct(object parameter)
         {
             var newProduct = new Product { Name = "New Product", Price = 0, Quantity = 0 };
+            _context.Products.Add(newProduct);
+            _context.SaveChanges();
             Products.Add(newProduct);
             SelectedProduct = newProduct;
         }
@@ -54,15 +66,19 @@ namespace web_marketplase_TRiZBD.ViewModels
         {
             if (SelectedProduct != null && Products.Contains(SelectedProduct))
             {
-                // Тут можно добавить логику проверки, можно ли удалять продукт
+                _context.Products.Remove(SelectedProduct);
+                _context.SaveChanges();
                 Products.Remove(SelectedProduct);
             }
         }
 
         private void ExecuteEditProduct(object parameter)
         {
-            // Перед редактированием можно выводить форму или диалог с деталями продукта для редактирования
-            // Пока здесь просто пример без реализации
+            if (SelectedProduct != null)
+            {
+                _context.Entry(SelectedProduct).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
         }
 
         private bool CanExecuteModifyProduct(object parameter)

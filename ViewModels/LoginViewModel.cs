@@ -1,14 +1,23 @@
-﻿using System;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Input;  // Для ICommand
+using System.Windows.Input;
+using web_marketplase_TRiZBD.Models;  // Убедитесь, что пространство имен моделей правильное
+using web_marketplase_TRiZBD.Views;
 
 namespace web_marketplase_TRiZBD.ViewModels
-{ 
+{
     public class LoginViewModel : ViewModelBase
     {
         private string _username;
         private string _password;
         private bool _isLoginAttemptFailed;
+        private Window LoginView;
+
+        public LoginViewModel(Window LoginView)
+        {
+            this.LoginView = LoginView;
+            LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
+        }
 
         public string Username
         {
@@ -33,30 +42,42 @@ namespace web_marketplase_TRiZBD.ViewModels
         public LoginViewModel()
         {
             LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
+            
+
         }
 
         private void ExecuteLogin(object parameter)
         {
-            // Здесь должна быть ваша логика проверки данных пользователя.
-            // Для примера предположим, что данные проверяются через сервис:
-            if (Username == "admin" && Password == "password123")  // Пример проверки
+            using (var context = new MarketplaceContext())
             {
-                MessageBox.Show("Login successful!");
-                IsLoginAttemptFailed = false;
-                // Можете добавить перенаправление на другой ViewModel или View здесь
-            }
-            else
-            {
-                MessageBox.Show("Login failed. Check your username and password.");
-                IsLoginAttemptFailed = true;
-                Password = ""; // Сброс пароля после неудачной попытки
+                var user = context.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password);
+                if (user != null)
+                {
+                    MessageBox.Show("Login successful!");
+                    IsLoginAttemptFailed = false;
+                    // Здесь код для перехода на страницу товаров
+                    OpenProductsView();
+                }
+                else
+                {
+                    MessageBox.Show("Login failed. Check your username and password.");
+                    IsLoginAttemptFailed = true;
+                    Password = ""; // Сброс пароля после неудачной попытки
+                }
             }
         }
 
         private bool CanExecuteLogin(object parameter)
         {
-            // Возможность выполнения команды входа
             return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
         }
+
+        private void OpenProductsView()
+        {
+            var productsView = new ProductsView();
+            productsView.Show();
+            this.LoginView.Close(); // Закрыть окно логина
+        }
+
     }
 }
